@@ -11,6 +11,10 @@ import { auth } from '@/lib/firebaseConfig';
 import React, { useState } from 'react'; 
 import ResumeGeneratorForm from '@/components/ResumeGeneratorForm'; // Import your component
 import EmailGeneratorForm from '@/components/EmailGeneratorForm'; 
+
+import AuthForm from '@/components/AuthForm';
+
+
 export default function Home() {
   console.log("Firebase Auth object on client:", auth); 
   return (
@@ -24,7 +28,7 @@ export default function Home() {
         <ResumeGeneratorForm title="AI Resume Helper" />
         <EmailGeneratorForm title="AI Email Composer" /> {/* USE NEW COMPONENT & PASS PROP */}
       </div>
-
+   <AuthForm title="User Account" /> {/* <--- USE AUTH FORM */}
     </main>
   );
 }

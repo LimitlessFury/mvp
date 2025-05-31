@@ -7,13 +7,31 @@ const EmailGeneratorForm = (props) => {
 
 
 
-const handleSubmit = (event) => {
-    event.preventDefault(); // MAGIC LINE!
-    console.log("Email Form Submitted!");
-    console.log("Current Recipient Goal State:", recipientGoal);
-    console.log("Current Key Info State:", keyInfo);
-    // In later days, we will add API call logic here.
-  };
+const handleSubmit = async (event) => { // Make it async
+  event.preventDefault();
+  console.log("Submitting Email Info:", { recipientGoal, keyInfo });
+
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        inputType: 'email',
+        goal: recipientGoal,
+        details: keyInfo,
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `Backend Error: ${response.status}`);
+    console.log("====== Frontend Received from Backend (Email): ======");
+    console.log(data);
+    console.log("================================================");
+  } catch (error) {
+    console.error("====== Frontend Error during fetch (Email): ======");
+    console.error(error);
+    console.error("============================================");
+  }
+};
 
 
   return (

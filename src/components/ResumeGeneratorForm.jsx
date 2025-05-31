@@ -5,13 +5,40 @@ const ResumeGeneratorForm = (props) => {
   const [jobDesc, setJobDesc] = useState(''); // State for job description
 
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // This is the MAGIC LINE! It stops the default browser form submission (page refresh).
-    console.log("Resume Form Submitted!");
-    console.log("Current Job Description State:", jobDesc); 
-    // In later days, we will add API call logic here.
-  };
-  // ---- END OF NEW CODE TO ADD ----
+  const handleSubmit = async (event) => { // Make it async
+  event.preventDefault();
+  console.log("Submitting Job Description:", jobDesc);
+
+  try {
+    const response = await fetch('/api/generate', { // Call your new API route
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        inputType: 'resume', // To identify the type of request
+        jobDescription: jobDesc 
+      }),
+    });
+
+    const data = await response.json(); // Parse the JSON response from the backend
+
+    if (!response.ok) { // Check if response status is 2xx
+      throw new Error(data.error || `Backend Error: ${response.status}`);
+    }
+
+    console.log("====== Frontend Received from Backend: ======");
+    console.log(data);
+    // Later, you'll set this data to a state variable to display it
+    console.log("==========================================");
+
+  } catch (error) {
+    console.error("====== Frontend Error during fetch: ======");
+    console.error(error);
+    // Later, you'll set an error state to display to the user
+    console.error("=======================================");
+  }
+};
 
 
   return (
