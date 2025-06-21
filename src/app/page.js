@@ -1,34 +1,39 @@
-// src/app/page.jsx
-
+// src/app/page.js (or .jsx)
 "use client";
+import React from 'react'; // Removed useState as it's not used directly in this page component anymore for form toggling
 
-// You can keep `import Image from "next/image";` if you plan to use it, 
-// otherwise, it can be removed if not used in this simplified page.
-// For now, I'll remove it to keep it focused on our components.
-
-// In src/app/page.js
-import { auth } from '@/lib/firebaseConfig';
-import React, { useState } from 'react'; 
-import ResumeGeneratorForm from '@/components/ResumeGeneratorForm'; // Import your component
+import ResumeGeneratorForm from '@/components/ResumeGeneratorForm';
 import EmailGeneratorForm from '@/components/EmailGeneratorForm'; 
-
 import AuthForm from '@/components/AuthForm';
 
-
 export default function Home() {
-  console.log("Firebase Auth object on client:", auth); 
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 bg-gray-100">
-      <h1 className="text-4xl font-bold text-gray-800 my-10 text-center">
-        AI Content Generators
-      </h1>
-      
-      {/* Container for the forms - helps with layout */}
-      <div className="w-full flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0 items-start justify-center"> {/* Flex container */}
-        <ResumeGeneratorForm title="AI Resume Helper" />
-        <EmailGeneratorForm title="AI Email Composer" /> {/* USE NEW COMPONENT & PASS PROP */}
-      </div>
-   <AuthForm title="User Account" /> {/* <--- USE AUTH FORM */}
-    </main>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800 flex flex-col items-center justify-center p-4 sm:p-8 selection:bg-indigo-500 selection:text-white">
+      <header className="mb-10 sm:mb-16 text-center">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+          AI Content Generators
+        </h1>
+        <p className="mt-3 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          Leverage AI to craft compelling resume points, professional emails, and more.
+        </p>
+      </header>
+
+      {/* Main content area for generators */}
+      <main className="w-full max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+          <ResumeGeneratorForm title="AI Resume Helper" />
+          <EmailGeneratorForm title="AI Email Composer" />
+        </div>
+
+        {/* Auth Form Section - can be styled further or conditionally rendered */}
+        <section className="w-full max-w-md mx-auto">
+          <AuthForm title="User Account" />
+        </section>
+      </main>
+
+      <footer className="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p>© {new Date().getFullYear()} LimitlessFury AI MVP. All rights reserved (not really, its a demo!).</p>
+      </footer>
+    </div>
   );
 }
