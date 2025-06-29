@@ -4,12 +4,15 @@ import React, { useState } from 'react';
 const EmailGeneratorForm = (props) => {
   const [recipientGoal, setRecipientGoal] = useState('');
   const [keyInfo, setKeyInfo] = useState('');
+  // --- START OF DAY 12 NEW CODE ---
   const [emailResult, setEmailResult] = useState(''); // To store generated email
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // We'll use this in the next step (Day 13)
+  // --- END OF DAY 12 NEW CODE ---
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Set loading state and clear previous results
     setIsLoading(true);
     setEmailResult('');
     setError('');
@@ -34,16 +37,21 @@ const EmailGeneratorForm = (props) => {
       if (!response.ok) {
         throw new Error(data.error || `Backend Error: ${response.status} ${response.statusText}`);
       }
+      
+      // --- START OF DAY 12 MODIFICATION ---
+      // Store the result in state instead of just logging it
       if (data.generatedText) {
         setEmailResult(data.generatedText);
       } else {
         setError("Received a response, but no generated email text was found.");
       }
+      // --- END OF DAY 12 MODIFICATION ---
+
     } catch (err) {
       console.error("Frontend Error during fetch (Email):", err);
       setError(err.message || "An unexpected error occurred while generating the email.");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // This will be used in Day 13
     }
   };
 
@@ -63,6 +71,8 @@ const EmailGeneratorForm = (props) => {
         </h2>
       )}
       <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* ... your existing input fields for goal and keyInfo ... */}
+        {/* They should already be connected to useState */}
         <div>
           <label htmlFor="recipientGoal" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Recipient Goal / Context
@@ -85,7 +95,7 @@ const EmailGeneratorForm = (props) => {
           <textarea
             id="keyInformation"
             name="keyInformation"
-            rows={5} // Slightly fewer rows than resume
+            rows={5}
             className="mt-1 block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm placeholder-gray-400 dark:placeholder-gray-500 text-black dark:text-white bg-white dark:bg-slate-700 transition-colors duration-150"
             placeholder="Paste key details, your background, what you want to achieve..."
             value={keyInfo}
@@ -93,6 +103,8 @@ const EmailGeneratorForm = (props) => {
             disabled={isLoading}
           />
         </div>
+
+        {/* --- START OF DAY 13 MODIFICATIONS (We'll do them now) --- */}
         <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
           <button
             type="submit"
@@ -118,8 +130,11 @@ const EmailGeneratorForm = (props) => {
             Reset
           </button>
         </div>
+        {/* --- END OF DAY 13 MODIFICATIONS --- */}
+
       </form>
 
+      {/* --- START OF DAY 12/13 NEW JSX --- */}
       {isLoading && (
         <div className="mt-6 text-center">
           <p className="text-teal-600 dark:text-teal-400 animate-pulse">Drafting your email...</p>
@@ -141,6 +156,7 @@ const EmailGeneratorForm = (props) => {
           </pre>
         </div>
       )}
+      {/* --- END OF DAY 12/13 NEW JSX --- */}
     </div>
   );
 };
