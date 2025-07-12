@@ -1,102 +1,73 @@
-import Image from "next/image";
+// src/app/page.js (or .jsx)
+"use client";
+import React from 'react'; // React is implicitly available in Next.js App Router client components
+
+// --- START OF DAY 17 MODIFICATION ---
+import { useAuth } from '@/context/AuthContext'; // Import our custom hook
+import { auth } from '@/lib/firebaseConfig'; // Import auth for the logout function
+import { signOut } from 'firebase/auth';
+// --- END OF DAY 17 MODIFICATION ---
+
+import ResumeGeneratorForm from '@/components/ResumeGeneratorForm';
+import EmailGeneratorForm from '@/components/EmailGeneratorForm'; 
+import AuthForm from '@/components/AuthForm';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // --- START OF DAY 17 MODIFICATION ---
+  const { currentUser } = useAuth(); // Consume the context to get the user
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+  // --- END OF DAY 17 MODIFICATION ---
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800 flex flex-col items-center p-4 sm:p-8 selection:bg-indigo-500 selection:text-white">
+      
+      {/* Header and Logout Button Container */}
+      <header className="w-full max-w-6xl mx-auto flex justify-between items-center mb-10 sm:mb-16">
+        <div className="text-left">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+            AI Content Generators
+          </h1>
+          <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">
+            {currentUser ? `Welcome, ${currentUser.email}!` : "Leverage AI to craft compelling content."}
+          </p>
         </div>
+        {currentUser && (
+          <button 
+            onClick={handleLogout}
+            className="px-4 py-2 font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow transition-colors"
+          >
+            Logout
+          </button>
+        )}
+      </header>
+
+      <main className="w-full max-w-6xl mx-auto">
+        {/* --- START OF DAY 17 CONDITIONAL RENDERING --- */}
+        {currentUser ? (
+          // If user is logged in, show the generator forms
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <ResumeGeneratorForm title="AI Resume Helper" />
+            <EmailGeneratorForm title="AI Email Composer" />
+          </div>
+        ) : (
+          // If user is not logged in, show the AuthForm
+          <section className="w-full max-w-md mx-auto">
+            <AuthForm title="Login or Sign Up to Continue" />
+          </section>
+        )}
+        {/* --- END OF DAY 17 CONDITIONAL RENDERING --- */}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p>© {new Date().getFullYear()} LimitlessFury AI MVP. All rights reserved (not really, its a demo!).</p>
       </footer>
     </div>
   );
